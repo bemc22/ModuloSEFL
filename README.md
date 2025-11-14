@@ -17,8 +17,8 @@ The model tackles the inverse problem of recovering HDR images from modulo wrapp
 - **Network**: Modified DRUNet with feature lifting (gradient-based) input processing
 - **Training Loss**: MSE loss + scale equivariance regularization
 - **Metrics**: For the demo we report PSNR and SSIM as baseline metrics; however, we recommend using HDR-specific perceptual metrics for a more accurate assessment of HDR image quality:
-    - HDR-VDP: perceptual difference metric designed for HDR content (compute on linear HDR radiance or converted to scene-referred units).
-    - PU21-based metrics: convert HDR to the PU21 perceptually-uniform domain and report PU-PSNR / PU-SSIM for more reliable fidelity measures.
+    - HDR-VDP [[1](https://hdrvdp.sourceforge.net/wiki/), [2](https://arxiv.org/abs/2304.13625)]: perceptual difference metric designed for HDR content (compute on linear HDR radiance or converted to scene-referred units).
+    - PU21 [[3](https://ieeexplore.ieee.org/abstract/document/9477471)]: convert HDR to the PU21 perceptually-uniform domain and report PU-PSNR / PU-SSIM for more reliable fidelity measures.
 
 ## Requirements
 
