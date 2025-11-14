@@ -38,16 +38,6 @@ Train the ModuloSEFLnet model on the UnModNet HDR dataset:
 ```bash
 python train.py
 ```
-
-**Configuration:**
-- Dataset path: `./data/unmodnet`
-- Epochs: 5000
-- Batch size: 16
-- Learning rate: 1e-3
-- Max HDR value: 4.0
-- Modulo threshold: 1.0
-- Checkpoints saved to: `./ckpts/ModuloSEFLnet.pth`
-
 The training script automatically evaluates on the test set after each epoch and reports PSNR/SSIM metrics.
 
 ### Testing
@@ -57,12 +47,7 @@ Test the trained model and visualize results:
 ```bash
 python test.py
 ```
-
-This loads the trained checkpoint from `./ckpts/ModuloSEFLnet.pth`, performs reconstruction on a test sample, and displays:
-- Modulo measurements
-- Reconstructed HDR image
-- Ground truth
-- PSNR and SSIM metrics
+This loads the trained checkpoint from `./ckpts/ModuloSEFLnet.pth`.
 
 ## Dataset Structure
 
@@ -77,4 +62,4 @@ data/
       *.npy files (test images)
 ```
 
-Images should be stored as `.npy` files and will be normalized to the range [0, MAX_VALUE].
+Images should be stored as `.npy` files and will be normalized to the range `[0, MAX_VALUE]`.
