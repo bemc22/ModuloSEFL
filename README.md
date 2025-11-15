@@ -1,5 +1,5 @@
 # Scale Equivariance Regularization and Feature Lifting in High Dynamic Range Modulo Imaging
-[Brayan Monroy](https://bemc22.github.io), [Jorge Bacca](https://scholar.google.com/citations?user=I5f1HjEAAAAJ&hl=es)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bemc22/ModuloSEFL/blob/main/demo.ipynb) 
 
 ## Summary
 
