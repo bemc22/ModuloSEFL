@@ -30,16 +30,24 @@ class NormalizeRange(object):
 def load_dataset(root, max_val=4.0):
     
 
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
         transforms.ToTensor(),
-        NormalizeRange(0.0, max_val)
+        transforms.RandomCrop(240),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(),
+        NormalizeRange(0.0, max_val),
+    ])
+
+    test_transform = transforms.Compose([
+        transforms.ToTensor(),
+        NormalizeRange(0.0, max_val),
     ])
 
 
     train_path = root
-    train_dataset = DatasetFolder(train_path, loader=load_img, extensions='.npy', transform=transform)
+    train_dataset = DatasetFolder(train_path, loader=load_img, extensions='.npy', transform=train_transform)
 
     test_path = root + '_test'
-    test_dataset = DatasetFolder(test_path, loader=load_img, extensions='.npy', transform=transform)
+    test_dataset = DatasetFolder(test_path, loader=load_img, extensions='.npy', transform=test_transform)
 
     return train_dataset, test_dataset
