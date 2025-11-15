@@ -50,8 +50,18 @@ physics = dinv.physics.SpatialUnwrapping(threshold=THRESHOLD, mode=MODE).to(devi
 model = ModuloSEFLnet(mx=THRESHOLD, in_channels=n_channels, out_channels=n_channels).to(
     device
 )
+
+
+model_name = "ModuloSEFLnet"
+ckpt_path = os.path.join("ckpts", model_name + ".pth")
+if os.path.exists(ckpt_path):
+    model.load_state_dict(torch.load(ckpt_path))
+    print(f"Loaded checkpoint from {ckpt_path}")
+else:
+    print(f"No checkpoint found at {ckpt_path}, training from scratch.")
+
 fn_loss = torch.nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
 
 
 # print numeber of parameters in K
@@ -61,6 +71,8 @@ print(f"Number of trainable parameters in the model: {num_params/1e3:.2f} K")
 
 psnr_fn = dinv.loss.metric.PSNR(max_pixel=MAX_VALUE)
 ssim_fn = dinv.loss.metric.SSIM(max_pixel=MAX_VALUE)
+
+max_psnr = 0.0
 
 for epoch in range(epochs):
     model.train()
@@ -90,7 +102,7 @@ for epoch in range(epochs):
                 )
 
         # save model checkpoint
-        save_path = os.path.join("ckpts", "ModuloSEFLnet.pth")
+        save_path = os.path.join("ckpts", model_name + ".pth")
         torch.save(model.state_dict(), save_path)
 
         model.eval()
@@ -110,3 +122,8 @@ for epoch in range(epochs):
             avg_ssim = total_ssim / len(test_loader)
 
             print(f"Test PSNR: {avg_psnr:.2f} dB, SSIM: {avg_ssim:.4f}")
+        
+        if avg_psnr > max_psnr:
+            best_path = os.path.join("ckpts", model_name + "_best.pth")
+            torch.save(model.state_dict(), best_path)
+            max_psnr = avg_psnr
