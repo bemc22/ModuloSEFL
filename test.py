@@ -33,7 +33,7 @@ ssim_fn = dinv.loss.metric.SSIM(max_pixel=MAX_VALUE)
 
 model.eval()
 
-sample =  next(iter(test_dataset))
+sample =  test_dataset[0]
 img, _ = sample
 img = img.unsqueeze(0).to(device)
 y   = physics(img)
