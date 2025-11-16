@@ -61,7 +61,7 @@ else:
     print(f"No checkpoint found at {ckpt_path}, training from scratch.")
 
 fn_loss = torch.nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-5)
 
 
 # print numeber of parameters in K
@@ -74,56 +74,54 @@ ssim_fn = dinv.loss.metric.SSIM(max_pixel=MAX_VALUE)
 
 max_psnr = 0.0
 
+
 for epoch in range(epochs):
     model.train()
     epoch_loss = 0.0
-    for epoch in range(epochs):
-        model.train()
-        epoch_loss = 0.0
 
-        with tqdm.tqdm(
-            total=len(train_loader), desc=f"Epoch {epoch+1}/{epochs}", unit="batch"
-        ) as pbar:
-            for batch in train_loader:
+    with tqdm.tqdm(
+        total=len(train_loader), desc=f"Epoch {epoch+1}/{epochs}", unit="batch"
+    ) as pbar:
+        for batch in train_loader:
 
-                x = batch[0].to(device)
-                y = physics(x)
+            x = batch[0].to(device)
+            y = physics(x)
 
-                optimizer.zero_grad()
-                x_rec = model(y)
-                loss = fn_loss(x_rec, x) + scale_eq_loss(physics, x, model, loss_fn=fn_loss)
-                loss.backward()
-                optimizer.step()
+            optimizer.zero_grad()
+            x_rec = model(y)
+            loss = fn_loss(x_rec, x) + scale_eq_loss(physics, x, model, loss_fn=fn_loss)
+            loss.backward()
+            optimizer.step()
 
-                epoch_loss += loss.item()
-                pbar.update(1)
-                pbar.set_postfix(
-                    loss=f"{loss.item():.6f}", avg=f"{(epoch_loss / pbar.n):.6f}"
-                )
+            epoch_loss += loss.item()
+            pbar.update(1)
+            pbar.set_postfix(
+                loss=f"{loss.item():.6f}", avg=f"{(epoch_loss / pbar.n):.6f}"
+            )
 
-        # save model checkpoint
-        save_path = os.path.join("ckpts", model_name + ".pth")
-        torch.save(model.state_dict(), save_path)
+    # save model checkpoint
+    save_path = os.path.join("ckpts", model_name + ".pth")
+    torch.save(model.state_dict(), save_path)
 
-        model.eval()
-        with torch.no_grad():
+    model.eval()
+    with torch.no_grad():
 
-            total_psnr = 0.0
-            total_ssim = 0.0
-            for batch in test_loader:
-                x = batch[0].to(device)
-                y = physics(x)
-                x_rec = model(y)
+        total_psnr = 0.0
+        total_ssim = 0.0
+        for batch in test_loader:
+            x = batch[0].to(device)
+            y = physics(x)
+            x_rec = model(y)
 
-                total_psnr += psnr_fn(x_rec, x).mean().item()
-                total_ssim += ssim_fn(x_rec, x).mean().item()
+            total_psnr += psnr_fn(x_rec, x).mean().item()
+            total_ssim += ssim_fn(x_rec, x).mean().item()
 
-            avg_psnr = total_psnr / len(test_loader)
-            avg_ssim = total_ssim / len(test_loader)
+        avg_psnr = total_psnr / len(test_loader)
+        avg_ssim = total_ssim / len(test_loader)
 
-            print(f"Test PSNR: {avg_psnr:.2f} dB, SSIM: {avg_ssim:.4f}")
-        
-        if avg_psnr > max_psnr:
-            best_path = os.path.join("ckpts", model_name + "_best.pth")
-            torch.save(model.state_dict(), best_path)
-            max_psnr = avg_psnr
+        print(f"Test PSNR: {avg_psnr:.2f} dB, SSIM: {avg_ssim:.4f}")
+    
+    if avg_psnr > max_psnr:
+        best_path = os.path.join("ckpts", model_name + "_best.pth")
+        torch.save(model.state_dict(), best_path)
+        max_psnr = avg_psnr
