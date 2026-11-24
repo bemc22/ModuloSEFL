@@ -1,4 +1,6 @@
 # Scale Equivariance Regularization and Feature Lifting in High Dynamic Range Modulo Imaging
+[![DOI:10.1109/CAMSAP66162.2025.11423952](https://zenodo.org/badge/DOI/10.1109/CAMSAP66162.2025.11423952.svg)](https://doi.org/10.1109/CAMSAP66162.2025.11423952)
+[![arXiv](https://img.shields.io/badge/arXiv-2601.23037-b31b1b.svg?style=plastic)](https://arxiv.org/abs/2601.23037)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bemc22/ModuloSEFL/blob/main/demo.ipynb) 
 
 ## Summary
